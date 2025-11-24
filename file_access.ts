@@ -1,16 +1,12 @@
-export class FileAccess {
-  constructor(private path: string) {}
+import {INumberSource} from "./average-interface";
 
-  public async readNumbers() {
-    const numbers: Array<number> = [];
-    const content: string = await Deno.readTextFile(this.path);
-    const lines: Array<string> = content.split("\n");
-    for (const line of lines) {
-      const n = Number.parseInt(line);
-      if (!Number.isNaN(n)) {
-        numbers.push(n);
-      }
-    }
-    return numbers;
+export class FileAccess implements INumberSource {
+  readNumbers(path: string): number[] {
+    const text = Deno.readTextFileSync(path);
+    return text
+        .split("\n")
+        .map((n) => n.trim())
+        .filter((n) => n !== "")
+        .map(Number);
   }
 }
